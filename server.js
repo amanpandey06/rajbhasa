@@ -5,7 +5,6 @@ const path = require('path');
 const app = express();
 const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY_HERE';
 const axios = require('axios');
-const OPENAI_API_KEY = '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'; // <-- Replace with your actual API key
 const natural = require('natural');
 const classifier = new natural.BayesClassifier();
 
