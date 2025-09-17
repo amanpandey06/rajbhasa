@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Login - College Chatbot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --bg: #0f172a;
+      --bg-secondary: #1e293b;
+      --card: #1e293b;
+      --card-hover: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --border-light: #475569;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --radius: 0.75rem;
+      --radius-sm: 0.5rem;
+      --radius-lg: 1rem;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-secondary: #f1f5f9;
+      --card: #ffffff;
+      --card-hover: #f8fafc;
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --border-light: #cbd5e1;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.6;
+    }
+    
+    .login-container {
+      background: var(--card);
+      padding: 3rem 2rem;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+    
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .login-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    
+    .login-logo i {
+      font-size: 2rem;
+      color: var(--primary);
+    }
+    
+    .login-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    
+    .login-subtitle {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      outline: none;
+      transition: var(--transition);
+    }
+    
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      margin-bottom: 1rem;
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .btn-primary:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    
+    .error-message {
+      color: var(--error);
+      font-size: 0.875rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+    
+    .success-message {
+      color: var(--success);
+      font-size: 0.875rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+    
+    .form-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    
+    .form-footer p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin: 0;
+    }
+    
+    .loading {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .loading i {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 480px) {
+      .login-container {
+        margin: 1rem;
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-logo">
+        <i class="fas fa-robot"></i>
+      </div>
+      <h1 class="login-title" id="formTitle">Welcome Back</h1>
+      <p class="login-subtitle" id="formSubtitle">Sign in to your account</p>
+    </div>
+
+    <div id="errorMsg" class="error-message"></div>
+    <div id="successMsg" class="success-message"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username" class="form-label">
+          <i class="fas fa-user"></i> Username
+        </label>
+        <input type="text" id="username" name="username" class="form-input" placeholder="Enter your username" required />
+      </div>
+      <div class="form-group">
+        <label for="password" class="form-label">
+          <i class="fas fa-lock"></i> Password
+        </label>
+        <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required />
+      </div>
+      <button type="submit" id="loginBtn" class="btn btn-primary">
+        <span class="btn-text">Sign In</span>
+        <div class="loading">
+          <i class="fas fa-spinner"></i>
+          <span>Signing in...</span>
+        </div>
+      </button>
+      <button type="button" class="btn btn-secondary" id="switchToSignup">
+        <i class="fas fa-user-plus"></i>
+        Create New Account
+      </button>
+    </form>
+
+    <form id="signupForm" style="display:none">
+      <div class="form-group">
+        <label for="newUsername" class="form-label">
+          <i class="fas fa-user"></i> Username
+        </label>
+        <input type="text" id="newUsername" name="newUsername" class="form-input" placeholder="Choose a username" required />
+      </div>
+      <div class="form-group">
+        <label for="newPassword" class="form-label">
+          <i class="fas fa-lock"></i> Password
+        </label>
+        <input type="password" id="newPassword" name="newPassword" class="form-input" placeholder="Create a password" required />
+      </div>
+      <button type="submit" id="signupBtn" class="btn btn-primary">
+        <span class="btn-text">Create Account</span>
+        <div class="loading">
+          <i class="fas fa-spinner"></i>
+          <span>Creating account...</span>
+        </div>
+      </button>
+      <button type="button" class="btn btn-secondary" id="switchToLogin">
+        <i class="fas fa-arrow-left"></i>
+        Back to Login
+      </button>
+    </form>
+
+    <div class="form-footer">
+      <p>College Chatbot - Multi-language Support</p>
+    </div>
+  </div>
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const switchToSignup = document.getElementById('switchToSignup');
+    const switchToLogin = document.getElementById('switchToLogin');
+    const formTitle = document.getElementById('formTitle');
+    const formSubtitle = document.getElementById('formSubtitle');
+    const errorMsg = document.getElementById('errorMsg');
+    const successMsg = document.getElementById('successMsg');
+
+    function showError(message) {
+      errorMsg.textContent = message;
+      errorMsg.style.display = 'block';
+      successMsg.style.display = 'none';
+    }
+
+    function showSuccess(message) {
+      successMsg.textContent = message;
+      successMsg.style.display = 'block';
+      errorMsg.style.display = 'none';
+    }
+
+    function hideMessages() {
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+    }
+
+    function setLoading(button, isLoading) {
+      const btnText = button.querySelector('.btn-text');
+      const loading = button.querySelector('.loading');
+      
+      if (isLoading) {
+        btnText.style.display = 'none';
+        loading.style.display = 'flex';
+        button.disabled = true;
+      } else {
+        btnText.style.display = 'block';
+        loading.style.display = 'none';
+        button.disabled = false;
+      }
+    }
+
+    switchToSignup.onclick = () => {
+      loginForm.style.display = 'none';
+      signupForm.style.display = 'block';
+      formTitle.textContent = 'Create Account';
+      formSubtitle.textContent = 'Join us today';
+      hideMessages();
+    };
+
+    switchToLogin.onclick = () => {
+      signupForm.style.display = 'none';
+      loginForm.style.display = 'block';
+      formTitle.textContent = 'Welcome Back';
+      formSubtitle.textContent = 'Sign in to your account';
+      hideMessages();
+    };
+
+    loginForm.onsubmit = async (e) => {
+      e.preventDefault();
+      hideMessages();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const loginBtn = document.getElementById('loginBtn');
+      
+      setLoading(loginBtn, true);
+      
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await res.json();
+        
+        if (data.success) {
+          showSuccess('Login successful! Redirecting...');
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('username', username);
+          
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1000);
+        } else {
+          showError(data.error || 'Login failed. Please check your credentials.');
+        }
+      } catch (error) {
+        showError('Network error. Please check your connection.');
+      } finally {
+        setLoading(loginBtn, false);
+      }
+    };
+
+    signupForm.onsubmit = async (e) => {
+      e.preventDefault();
+      hideMessages();
+      
+      const username = document.getElementById('newUsername').value;
+      const password = document.getElementById('newPassword').value;
+      const signupBtn = document.getElementById('signupBtn');
+      
+      setLoading(signupBtn, true);
+      
+      try {
+        const res = await fetch('/api/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await res.json();
+        
+        if (data.success) {
+          showSuccess('Account created successfully! You can now log in.');
+          signupForm.reset();
+          
+          setTimeout(() => {
+            switchToLogin.click();
+          }, 2000);
+        } else {
+          showError(data.error || 'Signup failed. Please try again.');
+        }
+      } catch (error) {
+        showError('Network error. Please check your connection.');
+      } finally {
+        setLoading(signupBtn, false);
+      }
+    };
+  </script>
+</body>
+</html>

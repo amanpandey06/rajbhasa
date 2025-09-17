@@ -1,0 +1,1380 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>College Chatbot — Multi-Language Support</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --bg: #0f172a;
+      --bg-secondary: #1e293b;
+      --card: #1e293b;
+      --card-hover: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --border-light: #475569;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --radius: 0.75rem;
+      --radius-sm: 0.5rem;
+      --radius-lg: 1rem;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-secondary: #f1f5f9;
+      --card: #ffffff;
+      --card-hover: #f8fafc;
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --border-light: #cbd5e1;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      line-height: 1.6;
+      transition: var(--transition);
+    }
+    
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+    }
+    
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--text-primary);
+    }
+    
+    .header-brand i {
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    
+    .user-info i {
+      color: var(--primary);
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border-color: var(--border-light);
+    }
+    
+    .btn-icon {
+      padding: 0.5rem;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-icon:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    
+    .main-container {
+      display: flex;
+      height: 100vh;
+      padding-top: 5rem;
+      overflow: hidden;
+    }
+    
+    .sidebar {
+      width: 320px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      overflow-y: auto;
+      height: calc(100vh - 5rem);
+    }
+    
+    .sidebar-header {
+      text-align: center;
+    }
+    
+    .sidebar-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .sidebar-subtitle {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    
+    .language-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .language-selector h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+    
+    .language-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .language-option {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .language-option:hover {
+      background: var(--card-hover);
+      border-color: var(--border-light);
+    }
+    
+    .language-option.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .features-section h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin: 0 0 1rem 0;
+    }
+    
+    .features-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .features-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    
+    .features-list li i {
+      color: var(--success);
+      font-size: 0.75rem;
+    }
+    
+    
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      height: calc(100vh - 5rem);
+      overflow: hidden;
+    }
+    
+    .chat-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .chat-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--success);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .chat-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .chat-messages {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      height: 0; 
+    }
+    
+    .message {
+      display: flex;
+      gap: 0.75rem;
+      animation: messageSlideIn 0.3s ease-out;
+    }
+    
+    .message.user {
+      flex-direction: row-reverse;
+    }
+    
+    .message-avatar {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .message.bot .message-avatar {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .message.user .message-avatar {
+      background: var(--secondary);
+      color: white;
+    }
+    
+    .message-content {
+      max-width: 70%;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-lg);
+      position: relative;
+    }
+    
+    .message.bot .message-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+    
+    .message.user .message-content {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .message-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    
+    .message.user .message-time {
+      text-align: right;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 1rem;
+    }
+    
+    .typing-dots {
+      display: flex;
+      gap: 0.25rem;
+    }
+    
+    .typing-dots span {
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--text-muted);
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    .chat-input-container {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--card);
+      flex-shrink: 0; 
+    }
+    
+    .input-wrapper {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-end;
+    }
+    
+    .input-field {
+      flex: 1;
+      position: relative;
+    }
+    
+    .input-field input {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      outline: none;
+      transition: var(--transition);
+      resize: none;
+    }
+    
+    .input-field input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    .input-field input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .send-button {
+      padding: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .send-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    
+    .send-button:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .voice-button {
+      padding: 1rem;
+      background: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 0.5rem;
+    }
+    
+    .voice-button:hover {
+      background: #0891b2;
+      transform: translateY(-1px);
+    }
+    
+    .voice-button.recording {
+      background: var(--error);
+      animation: pulse 1.5s infinite;
+    }
+    
+    .voice-button:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .speak-button {
+      padding: 0.5rem;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 0.5rem;
+    }
+    
+    .speak-button:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    
+    .speak-button.speaking {
+      background: var(--success);
+      color: white;
+    }
+    
+    .voice-status {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    .voice-status.show {
+      display: flex;
+    }
+    
+    .voice-status.recording {
+      color: var(--error);
+      border-color: var(--error);
+    }
+    
+    .voice-status.speaking {
+      color: var(--success);
+      border-color: var(--success);
+    }
+    
+    .voice-wave {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+    }
+    
+    .voice-wave span {
+      width: 3px;
+      background: currentColor;
+      border-radius: 2px;
+      animation: wave 1.2s infinite ease-in-out;
+    }
+    
+    .voice-wave span:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+    
+    .voice-wave span:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+    
+    .voice-wave span:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+    
+    .voice-wave span:nth-child(5) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+      }
+    }
+    
+    @keyframes wave {
+      0%, 40%, 100% {
+        height: 4px;
+      }
+      20% {
+        height: 12px;
+      }
+    }
+    
+    .input-hint {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    
+    /* Quick Actions */
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .quick-action {
+      padding: 0.5rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .quick-action:hover {
+      background: var(--card-hover);
+      color: var(--text-primary);
+    }
+    
+    @keyframes messageSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes typing {
+      0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+      30% {
+        transform: translateY(-10px);
+        opacity: 1;
+      }
+    }
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 280px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+        padding-top: 4rem;
+        height: 100vh;
+      }
+      
+      .sidebar {
+        width: 100%;
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        height: auto;
+        max-height: 40vh;
+        overflow-y: auto;
+      }
+      
+      .chat-container {
+        height: calc(100vh - 4rem - 40vh);
+        min-height: 60vh;
+      }
+      
+      .header {
+        padding: 1rem;
+      }
+      
+      .chat-header,
+      .chat-input-container {
+        padding: 1rem;
+      }
+      
+      .chat-messages {
+        padding: 1rem;
+      }
+      
+      .message-content {
+        max-width: 85%;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .main-container {
+        padding-top: 3.5rem;
+      }
+      
+      .header {
+        padding: 0.75rem;
+      }
+      
+      .header-brand {
+        font-size: 1rem;
+      }
+      
+      .sidebar {
+        padding: 0.75rem;
+        max-height: 35vh;
+      }
+      
+      .chat-container {
+        height: calc(100vh - 3.5rem - 35vh);
+        min-height: 65vh;
+      }
+      
+      .chat-header,
+      .chat-input-container {
+        padding: 0.75rem;
+      }
+      
+      .chat-messages {
+        padding: 0.75rem;
+      }
+      
+      .message-content {
+        max-width: 90%;
+        padding: 0.75rem 1rem;
+      }
+      
+      .input-wrapper {
+        gap: 0.5rem;
+      }
+      
+      .input-field input {
+        padding: 0.75rem 1rem;
+      }
+      
+      .send-button {
+        padding: 0.75rem;
+      }
+      
+      .voice-button {
+        padding: 0.75rem;
+        margin-left: 0.25rem;
+      }
+      
+      .input-hint {
+        font-size: 0.7rem;
+        line-height: 1.3;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <header class="header">
+    <div class="header-brand">
+      <i class="fas fa-robot"></i>
+      College Chatbot
+    </div>
+    <div class="header-actions">
+      <div class="user-info" id="userNameDisplay">
+        <i class="fas fa-user"></i>
+        <span id="usernameText">Guest</span>
+      </div>
+      <button class="btn btn-icon" id="themeToggleBtn" title="Toggle Theme">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button class="btn btn-secondary" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+      </button>
+    </div>
+  </header>
+
+  
+  <div class="main-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">
+          <i class="fas fa-graduation-cap"></i>
+          College Assistant
+        </div>
+        <div class="sidebar-subtitle">Multi-language Support</div>
+      </div>
+
+      <div class="language-selector">
+        <h3>Select Language</h3>
+        <div class="language-options">
+          <div class="language-option active" data-lang="auto">
+            <i class="fas fa-magic"></i> Auto
+          </div>
+          <div class="language-option" data-lang="en">
+            <i class="fas fa-flag-usa"></i> English
+          </div>
+          <div class="language-option" data-lang="hi">
+            <i class="fas fa-flag"></i> हिन्दी
+          </div>
+          <div class="language-option" data-lang="mrw">
+            <i class="fas fa-flag"></i> Marwari
+          </div>
+        </div>
+      </div>
+
+      <div class="features-section">
+        <h3>Topics Covered</h3>
+        <ul class="features-list">
+          <li><i class="fas fa-check"></i> Exams & Admission</li>
+          <li><i class="fas fa-check"></i> Fees & Deadlines</li>
+          <li><i class="fas fa-check"></i> Scholarships & Financial Aid</li>
+          <li><i class="fas fa-check"></i> Hostel & Accommodation</li>
+          <li><i class="fas fa-check"></i> Library & Transport</li>
+          <li><i class="fas fa-check"></i> Campus Facilities</li>
+          <li><i class="fas fa-check"></i> Academic Calendar</li>
+          <li><i class="fas fa-check"></i> Placement & Career</li>
+          <li><i class="fas fa-check"></i> Contact Information</li>
+        </ul>
+      </div>
+    </aside>
+
+    
+    <main class="chat-container">
+      <div class="chat-header">
+        <div class="chat-status">
+          <i class="fas fa-circle"></i>
+          FAQ Database Loaded
+        </div>
+        <div class="chat-actions">
+          <button class="btn btn-icon" id="downloadLog" title="Download Chat Logs">
+            <i class="fas fa-download"></i>
+          </button>
+          <button class="btn btn-icon" id="clearBtn" title="Clear Chat">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        
+      </div>
+
+      <div class="chat-input-container">
+        <div class="input-wrapper">
+          <div class="input-field">
+            <input id="userInput" type="text" placeholder="Ask your question in any language..." />
+          </div>
+          <button class="voice-button" id="voiceBtn" title="Voice Input">
+            <i class="fas fa-microphone"></i>
+          </button>
+          <button class="send-button" id="sendBtn">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="voice-status" id="voiceStatus">
+          <i class="fas fa-microphone"></i>
+          <span id="voiceStatusText">Listening...</span>
+          <div class="voice-wave">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        <div class="input-hint">Tip: Ask in Hindi, English, or Marwari • Click mic for voice input • Press Ctrl+V for voice</div>
+        <div class="quick-actions">
+          <div class="quick-action" data-question="exam date">📅 Exam Schedule</div>
+          <div class="quick-action" data-question="admission form">📝 Admission Info</div>
+          <div class="quick-action" data-question="fee deadline">⏰ Fee Deadlines</div>
+          <div class="quick-action" data-question="scholarship types">🎓 Scholarships</div>
+          <div class="quick-action" data-question="hostel fee">🏠 Hostel Fees</div>
+          <div class="quick-action" data-question="library timing">📚 Library Hours</div>
+          <div class="quick-action" data-question="campus facilities">🏢 Campus Facilities</div>
+          <div class="quick-action" data-question="academic calendar">📆 Academic Calendar</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+<script>
+
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const currentTheme = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', currentTheme);
+updateThemeIcon();
+
+function updateThemeIcon() {
+  const icon = themeToggleBtn.querySelector('i');
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+}
+
+themeToggleBtn.onclick = () => {
+  const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  updateThemeIcon();
+};
+
+
+const logoutBtn = document.getElementById('logoutBtn');
+logoutBtn.onclick = () => {
+  localStorage.clear();
+  window.location.href = 'login.html';
+};
+
+const usernameText = document.getElementById('usernameText');
+const username = localStorage.getItem('username');
+if (usernameText && username) {
+  usernameText.textContent = username;
+}
+
+if (localStorage.getItem('isLoggedIn') !== 'true') {
+  window.location.href = 'login.html';
+}
+
+const chatMessages = document.getElementById('chatMessages');
+const input = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+const voiceBtn = document.getElementById('voiceBtn');
+const voiceStatus = document.getElementById('voiceStatus');
+const voiceStatusText = document.getElementById('voiceStatusText');
+const downloadBtn = document.getElementById('downloadLog');
+const clearBtn = document.getElementById('clearBtn');
+const langButtons = document.querySelectorAll('.language-option');
+const quickActions = document.querySelectorAll('.quick-action');
+
+let preferred = 'auto';
+let logs = [];
+let context = {};
+let isTyping = false;
+let isRecording = false;
+let isSpeaking = false;
+let recognition = null;
+let synthesis = null;
+
+function initVoiceFeatures() {
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-In'; 
+    
+    recognition.onstart = () => {
+      isRecording = true;
+      voiceBtn.classList.add('recording');
+      voiceStatus.classList.add('show', 'recording');
+      voiceStatusText.textContent = 'Listening...';
+    };
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      input.value = transcript;
+      hideVoiceStatus();
+    };
+    
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      hideVoiceStatus();
+      showVoiceError('Speech recognition failed. Please try again.');
+    };
+    
+    recognition.onend = () => {
+      isRecording = false;
+      voiceBtn.classList.remove('recording');
+      hideVoiceStatus();
+    };
+  } else {
+    voiceBtn.disabled = true;
+    voiceBtn.title = 'Voice input not supported in this browser';
+  }
+  
+  if ('speechSynthesis' in window) {
+    synthesis = window.speechSynthesis;
+  }
+}
+
+function startVoiceInput() {
+  if (!recognition) {
+    showVoiceError('Voice input not supported in this browser');
+    return;
+  }
+  
+  if (isRecording) {
+    stopVoiceInput();
+    return;
+  }
+  
+  const langMap = {
+    'en': 'en-IN',
+    'hi': 'hi-IN',
+    'mrw': 'hi-IN', 
+    'auto': 'en-IN'
+  };
+  
+  recognition.lang = langMap[preferred] || 'en-IN';
+  recognition.start();
+}
+
+function stopVoiceInput() {
+  if (recognition && isRecording) {
+    recognition.stop();
+  }
+}
+
+function hideVoiceStatus() {
+  voiceStatus.classList.remove('show', 'recording', 'speaking');
+}
+
+function showVoiceError(message) {
+  voiceStatusText.textContent = message;
+  voiceStatus.classList.add('show');
+  setTimeout(hideVoiceStatus, 3000);
+}
+
+function speakText(text) {
+  if (!synthesis) {
+    alert('Text-to-speech not supported in this browser');
+    return;
+  }
+  
+  if (isSpeaking) {
+    synthesis.cancel();
+    return;
+  }
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  
+  const langMap = {
+    'en': 'en-US',
+    'hi': 'hi-IN',
+    'mrw': 'hi-IN',
+    'auto': 'en-US'
+  };
+  
+  utterance.lang = langMap[preferred] || 'en-US';
+  utterance.rate = 0.9;
+  utterance.pitch = 1;
+  utterance.volume = 0.8;
+  
+  utterance.onstart = () => {
+    isSpeaking = true;
+    
+    const speakButtons = document.querySelectorAll('.speak-button');
+    speakButtons.forEach(btn => {
+      if (btn.onclick.toString().includes(text)) {
+        btn.classList.add('speaking');
+      }
+    });
+    showSpeakingStatus();
+  };
+  
+  utterance.onend = () => {
+    isSpeaking = false;
+    const speakButtons = document.querySelectorAll('.speak-button');
+    speakButtons.forEach(btn => btn.classList.remove('speaking'));
+    hideVoiceStatus();
+  };
+  
+  utterance.onerror = (event) => {
+    console.error('Speech synthesis error:', event.error);
+    isSpeaking = false;
+    hideVoiceStatus();
+  };
+  
+  synthesis.speak(utterance);
+}
+
+function showSpeakingStatus() {
+  voiceStatusText.textContent = 'Speaking...';
+  voiceStatus.classList.add('show', 'speaking');
+}
+
+initVoiceFeatures();
+
+// FAQ Data 
+let userFAQ = [
+  {id:1,intent:'exam_date',keys:['exam','exam date','exam kab','pariksha','test','examination'],answers:{
+    en:"Semester exams will start from 15th September 2025. Check the Student Portal for timetable.",
+    hi:"सेमेस्टर परीक्षाएँ 15 सितम्बर 2025 से शुरू होंगी। टाइमटेबल Student Portal पर देखें।",
+    mrw:"Semester ki pariksha 15 September 2025 thi shuru hovegi. Timetable Student Portal par dekho.",
+    pa:"ਸੈਮੈਸਟਰ ਦੀਆਂ ਇਮਤਿਹਾਨਾਂ 15 ਸਤੰਬਰ 2025 ਤੋਂ ਸ਼ੁਰੂ ਹੋਣਗੀਆਂ। ਟਾਈਮਟੇਬਲ Student Portal 'ਤੇ ਵੇਖੋ।"
+  }},
+  {id:2,intent:'admission_form',keys:['admission','apply','application','admission process','how to apply'],answers:{
+    en:"Admission form is available online under Admissions > Apply Now. Last date: 30th June 2025.",
+    hi:"Admission form ऑनलाइन Admissions > Apply Now सेक्शन में उपलब्ध है। अंतिम तिथि: 30 जून 2025।",
+    mrw:"Admission form online Admissions > Apply Now mein milsi. Last date: 30 June 2025.",
+    pa:"Admission form online Admissions > Apply Now 'ਚ ਮਿਲ ਜਾਵੇਗਾ। ਆਖਰੀ ਤਾਰੀਖ: 30 ਜੂਨ 2025।"
+  }},
+  {id:3,intent:'hostel_fee',keys:['hostel','hostel fee','kiraya','hostel charges','hostel cost'],answers:{
+    en:"Hostel fee is ₹12,000 per semester. Payment deadline: 15th of each month.",
+    hi:"होस्टल शुल्क प्रति सेमेस्टर ₹12,000 है। भुगतान की अंतिम तिथि: हर महीने की 15 तारीख।",
+    mrw:"Hostel ko paiso per semester ₹12,000 hai. Payment deadline: har mahine ki 15 tarikh.",
+    pa:"ਹੋਸਟਲ ਫੀਸ ਹਰ ਸੈਮੈਸਟਰ ₹12,000 ਹੈ। ਭੁਗਤਾਨ ਦੀ ਆਖਰੀ ਤਾਰੀਖ: ਹਰ ਮਹੀਨੇ ਦੀ 15 ਤਾਰੀਖ।"
+  }},
+  {id:4,intent:'scholarship',keys:['scholarship','fee concession','financial aid','merit scholarship','need based'],answers:{
+    en:"Multiple scholarships available: Merit-based (90%+ marks), Need-based (income < ₹3L), Sports (state/national level). Apply by 20th July 2025.",
+    hi:"कई छात्रवृत्ति उपलब्ध हैं: योग्यता आधारित (90%+ अंक), आवश्यकता आधारित (आय < ₹3L), खेल (राज्य/राष्ट्रीय स्तर)। 20 जुलाई 2025 तक आवेदन करें।",
+    mrw:"Kai scholarship milsi: Merit-based (90%+ marks), Need-based (income < ₹3L), Sports (state/national level). Apply by 20 July 2025.",
+    pa:"ਕਈ ਛਾਤਰਵ੍ਰਿਤੀਆਂ ਉਪਲਬਧ ਹਨ: ਯੋਗਤਾ ਆਧਾਰਿਤ (90%+ ਅੰਕ), ਲੋੜ ਆਧਾਰਿਤ (ਆਮਦਨੀ < ₹3L), ਖੇਡ (ਰਾਜ/ਰਾਸ਼ਟਰੀ ਪੱਧਰ)। 20 ਜੁਲਾਈ 2025 ਤੱਕ ਅਰਜ਼ੀ ਦਿਓ।"
+  }},
+  {id:5,intent:'placement',keys:['placement','job','campus','placement drive','career'],answers:{
+    en:"Placement drives are conducted every semester. 85% placement rate. Top recruiters: TCS, Infosys, Wipro, Amazon. Check Training & Placement Cell board.",
+    hi:"प्लेसमेंट ड्राइव हर सेमेस्टर आयोजित होती है। 85% प्लेसमेंट दर। शीर्ष भर्तीकर्ता: TCS, Infosys, Wipro, Amazon। Training & Placement Cell नोटिस बोर्ड देखें।",
+    mrw:"Placement drive har semester hove hai. 85% placement rate. Top recruiters: TCS, Infosys, Wipro, Amazon. Training & Placement Cell board dekho.",
+    pa:"Placement drive ਹਰ ਸੈਮੈਸਟਰ ਕਰਵਾਈ ਜਾਂਦੀ ਹੈ। 85% ਪਲੇਸਮੈਂਟ ਦਰ। ਚੋਟੀ ਦੇ ਭਰਤੀਕਰਤਾ: TCS, Infosys, Wipro, Amazon। Training & Placement Cell board ਵੇਖੋ।"
+  }},
+  {id:6,intent:'contact',keys:['contact','phone','helpdesk','college contact','support'],answers:{
+    en:"Contact: +91-99999-99999 (Helpdesk), +91-88888-88888 (Admissions), help@college.edu, admissions@college.edu",
+    hi:"संपर्क: +91-99999-99999 (हेल्पडेस्क), +91-88888-88888 (प्रवेश), help@college.edu, admissions@college.edu",
+    mrw:"Sampark: +91-99999-99999 (Helpdesk), +91-88888-88888 (Admissions), help@college.edu, admissions@college.edu",
+    pa:"ਸੰਪਰਕ: +91-99999-99999 (Helpdesk), +91-88888-88888 (Admissions), help@college.edu, admissions@college.edu"
+  }},
+  {id:7,intent:'library_timing',keys:['library','timing','pustakalaya','library hours','books'],answers:{
+    en:"Library is open from 9 AM to 6 PM on working days, 10 AM to 4 PM on Saturdays. Closed on Sundays and holidays.",
+    hi:"लाइब्रेरी सभी कार्यदिवसों पर सुबह 9 से शाम 6 बजे तक, शनिवार को सुबह 10 से शाम 4 बजे तक खुली रहती है। रविवार और छुट्टियों में बंद।",
+    mrw:"Library har din 9 baje thi 6 baje tak, Saturday ko 10 baje thi 4 baje tak khuli rehti hai. Sunday aur holidays mein band.",
+    pa:"ਲਾਇਬ੍ਰੇਰੀ ਹਰ ਕੰਮ ਵਾਲੇ ਦਿਨ 9 ਵਜੇ ਤੋਂ 6 ਵਜੇ ਤੱਕ, ਸ਼ਨੀਵਾਰ ਨੂੰ 10 ਵਜੇ ਤੋਂ 4 ਵਜੇ ਤੱਕ ਖੁੱਲੀ ਰਹਿੰਦੀ ਹੈ। ਐਤਵਾਰ ਅਤੇ ਛੁੱਟੀਆਂ ਵਿੱਚ ਬੰਦ।"
+  }},
+  {id:8,intent:'class_timing',keys:['class','lecture','attendance','class start','schedule'],answers:{
+    en:"Classes start from 9:30 AM and attendance is compulsory. Minimum 75% attendance required for exams.",
+    hi:"कक्षाएँ सुबह 9:30 बजे से शुरू होती हैं और उपस्थिति अनिवार्य है। परीक्षा के लिए न्यूनतम 75% उपस्थिति आवश्यक।",
+    mrw:"Class 9:30 baje thi shuru hove hai, attendance jaruri hai. Exam ke liye minimum 75% attendance chahiye.",
+    pa:"ਕਲਾਸਾਂ 9:30 ਵਜੇ ਤੋਂ ਸ਼ੁਰੂ ਹੁੰਦੀਆਂ ਹਨ ਅਤੇ ਹਾਜ਼ਰੀ ਲਾਜ਼ਮੀ ਹੈ। ਇਮਤਿਹਾਨ ਲਈ ਘੱਟੋ-ਘੱਟ 75% ਹਾਜ਼ਰੀ ਚਾਹੀਦੀ।"
+  }},
+  {id:9,intent:'transport',keys:['bus','transport','college bus','bus timing','commute'],answers:{
+    en:"College buses run on all major city routes. Timings: 8:00 AM, 8:30 AM, 9:00 AM (morning), 4:00 PM, 5:00 PM, 6:00 PM (evening).",
+    hi:"कॉलेज बसें सभी प्रमुख मार्गों पर चलती हैं। समय: सुबह 8:00, 8:30, 9:00 बजे, शाम 4:00, 5:00, 6:00 बजे।",
+    mrw:"College bus sabse badi city route par chale hai. Timing: subah 8:00, 8:30, 9:00 baje, sham 4:00, 5:00, 6:00 baje.",
+    pa:"ਕਾਲਜ ਦੀਆਂ ਬੱਸਾਂ ਸਾਰੇ ਵੱਡੇ ਸ਼ਹਿਰੀ ਰੂਟਾਂ 'ਤੇ ਚੱਲਦੀਆਂ ਹਨ। ਸਮਾਂ: ਸਵੇਰੇ 8:00, 8:30, 9:00 ਵਜੇ, ਸ਼ਾਮ 4:00, 5:00, 6:00 ਵਜੇ।"
+  }},
+  {id:10,intent:'fee_payment',keys:['fee','pay','deposit','fee online','fee offline','payment'],answers:{
+    en:"Fee can be paid online via Student Portal or offline in Accounts Section. Payment deadline: 15th of each month. Late fee: ₹500 after deadline.",
+    hi:"कॉलेज शुल्क Student Portal से ऑनलाइन या Accounts Section में ऑफलाइन जमा किया जा सकता है। भुगतान की अंतिम तिथि: हर महीने की 15 तारीख। देर से भुगतान शुल्क: ₹500।",
+    mrw:"College ko paiso Student Portal thi online ya Accounts Section mein jama hove hai. Payment deadline: har mahine ki 15 tarikh. Late fee: ₹500.",
+    pa:"ਫੀਸ Student Portal ਰਾਹੀਂ ਆਨਲਾਈਨ ਜਾਂ Accounts Section 'ਚ ਆਫਲਾਈਨ ਜਮ੍ਹਾਂ ਕਰਵਾਈ ਜਾ ਸਕਦੀ ਹੈ। ਭੁਗਤਾਨ ਦੀ ਆਖਰੀ ਤਾਰੀਖ: ਹਰ ਮਹੀਨੇ ਦੀ 15 ਤਾਰੀਖ। ਦੇਰੀ ਨਾਲ ਭੁਗਤਾਨ ਫੀਸ: ₹500।"
+  }},
+  {id:11,intent:'fee_deadline',keys:['fee deadline','payment deadline','last date','due date','fee due'],answers:{
+    en:"Fee payment deadline is 15th of each month. Late fee of ₹500 applies after deadline. For semester fees, deadline is 30th of the month before semester starts.",
+    hi:"शुल्क भुगतान की अंतिम तिथि हर महीने की 15 तारीख है। अंतिम तिथि के बाद ₹500 का विलंब शुल्क लगता है। सेमेस्टर शुल्क के लिए, सेमेस्टर शुरू होने से पहले महीने की 30 तारीख तक।",
+    mrw:"Fee payment deadline har mahine ki 15 tarikh hai. Deadline ke baad ₹500 ka late fee lagta hai. Semester fee ke liye, semester shuru hone se pehle mahine ki 30 tarikh tak.",
+    pa:"ਫੀਸ ਭੁਗਤਾਨ ਦੀ ਆਖਰੀ ਤਾਰੀਖ ਹਰ ਮਹੀਨੇ ਦੀ 15 ਤਾਰੀਖ ਹੈ। ਆਖਰੀ ਤਾਰੀਖ ਤੋਂ ਬਾਅਦ ₹500 ਦਾ ਦੇਰੀ ਫੀਸ ਲੱਗਦਾ ਹੈ। ਸੈਮੈਸਟਰ ਫੀਸ ਲਈ, ਸੈਮੈਸਟਰ ਸ਼ੁਰੂ ਹੋਣ ਤੋਂ ਪਹਿਲਾਂ ਮਹੀਨੇ ਦੀ 30 ਤਾਰੀਖ ਤੱਕ।"
+  }},
+  {id:12,intent:'scholarship_types',keys:['merit scholarship','need based scholarship','sports scholarship','scholarship types','scholarship categories'],answers:{
+    en:"Available scholarships: 1) Merit-based (90%+ marks) - ₹25,000/year, 2) Need-based (income < ₹3L) - ₹15,000/year, 3) Sports (state/national level) - ₹20,000/year, 4) Minority - ₹10,000/year.",
+    hi:"उपलब्ध छात्रवृत्ति: 1) योग्यता आधारित (90%+ अंक) - ₹25,000/वर्ष, 2) आवश्यकता आधारित (आय < ₹3L) - ₹15,000/वर्ष, 3) खेल (राज्य/राष्ट्रीय स्तर) - ₹20,000/वर्ष, 4) अल्पसंख्यक - ₹10,000/वर्ष।",
+    mrw:"Available scholarships: 1) Merit-based (90%+ marks) - ₹25,000/year, 2) Need-based (income < ₹3L) - ₹15,000/year, 3) Sports (state/national level) - ₹20,000/year, 4) Minority - ₹10,000/year.",
+    pa:"ਉਪਲਬਧ ਛਾਤਰਵ੍ਰਿਤੀਆਂ: 1) ਯੋਗਤਾ ਆਧਾਰਿਤ (90%+ ਅੰਕ) - ₹25,000/ਸਾਲ, 2) ਲੋੜ ਆਧਾਰਿਤ (ਆਮਦਨੀ < ₹3L) - ₹15,000/ਸਾਲ, 3) ਖੇਡ (ਰਾਜ/ਰਾਸ਼ਟਰੀ ਪੱਧਰ) - ₹20,000/ਸਾਲ, 4) ਅਲਪਸੰਖਿਆਕ - ₹10,000/ਸਾਲ।"
+  }},
+  {id:13,intent:'academic_calendar',keys:['academic calendar','semester dates','holidays','vacation','academic year'],answers:{
+    en:"Academic Year 2025-26: Semester 1 (July-Dec 2025), Semester 2 (Jan-June 2026). Major holidays: Diwali (Oct 20-24), Christmas (Dec 25), Holi (Mar 15), Summer break (May 15-June 30).",
+    hi:"शैक्षणिक वर्ष 2025-26: सेमेस्टर 1 (जुलाई-दिसंबर 2025), सेमेस्टर 2 (जनवरी-जून 2026)। प्रमुख छुट्टियां: दिवाली (20-24 अक्टूबर), क्रिसमस (25 दिसंबर), होली (15 मार्च), गर्मी की छुट्टी (15 मई-30 जून)।",
+    mrw:"Academic Year 2025-26: Semester 1 (July-Dec 2025), Semester 2 (Jan-June 2026). Major holidays: Diwali (Oct 20-24), Christmas (Dec 25), Holi (Mar 15), Summer break (May 15-June 30).",
+    pa:"ਵਿਦਿਅਕ ਸਾਲ 2025-26: ਸੈਮੈਸਟਰ 1 (ਜੁਲਾਈ-ਦਸੰਬਰ 2025), ਸੈਮੈਸਟਰ 2 (ਜਨਵਰੀ-ਜੂਨ 2026)। ਮੁੱਖ ਛੁੱਟੀਆਂ: ਦਿਵਾਲੀ (20-24 ਅਕਤੂਬਰ), ਕ੍ਰਿਸਮਸ (25 ਦਸੰਬਰ), ਹੋਲੀ (15 ਮਾਰਚ), ਗਰਮੀ ਦੀ ਛੁੱਟੀ (15 ਮਈ-30 ਜੂਨ)।"
+  }},
+  {id:14,intent:'campus_facilities',keys:['campus facilities','infrastructure','labs','computer lab','library facilities'],answers:{
+    en:"Campus facilities: 24/7 Library, Computer Labs (200+ systems), Wi-Fi campus, Sports complex, Cafeteria, Medical center, ATM, Parking, Hostel (500+ capacity), Auditorium (1000+ seats).",
+    hi:"कैंपस सुविधाएं: 24/7 लाइब्रेरी, कंप्यूटर लैब (200+ सिस्टम), वाई-फाई कैंपस, खेल परिसर, कैफेटेरिया, चिकित्सा केंद्र, एटीएम, पार्किंग, हॉस्टल (500+ क्षमता), सभागार (1000+ सीटें)।",
+    mrw:"Campus facilities: 24/7 Library, Computer Labs (200+ systems), Wi-Fi campus, Sports complex, Cafeteria, Medical center, ATM, Parking, Hostel (500+ capacity), Auditorium (1000+ seats).",
+    pa:"ਕੈਂਪਸ ਸੁਵਿਧਾਵਾਂ: 24/7 ਲਾਇਬ੍ਰੇਰੀ, ਕੰਪਿਊਟਰ ਲੈਬ (200+ ਸਿਸਟਮ), ਵਾਈ-ਫਾਈ ਕੈਂਪਸ, ਖੇਡ ਕੰਪਲੈਕਸ, ਕੈਫੇਟੇਰੀਆ, ਮੈਡੀਕਲ ਸੈਂਟਰ, ਏਟੀਐਮ, ਪਾਰਕਿੰਗ, ਹੋਸਟਲ (500+ ਸਮਰੱਥਾ), ਆਡੀਟੋਰੀਅਮ (1000+ ਸੀਟਾਂ)।"
+  }},
+  {id:15,intent:'admission_requirements',keys:['admission requirements','eligibility','documents required','admission criteria'],answers:{
+    en:"Admission requirements: 10+2 with 60% marks, Valid ID proof, Passport size photos (4), Character certificate, Migration certificate, Caste certificate (if applicable), Medical certificate.",
+    hi:"प्रवेश आवश्यकताएं: 10+2 में 60% अंक, वैध पहचान प्रमाण, पासपोर्ट साइज फोटो (4), चरित्र प्रमाण पत्र, स्थानांतरण प्रमाण पत्र, जाति प्रमाण पत्र (यदि लागू), चिकित्सा प्रमाण पत्र।",
+    mrw:"Admission requirements: 10+2 with 60% marks, Valid ID proof, Passport size photos (4), Character certificate, Migration certificate, Caste certificate (if applicable), Medical certificate.",
+    pa:"ਪ੍ਰਵੇਸ਼ ਲੋੜਾਂ: 10+2 ਵਿੱਚ 60% ਅੰਕ, ਵੈਧ ਪਛਾਣ ਪ੍ਰਮਾਣ, ਪਾਸਪੋਰਟ ਸਾਈਜ਼ ਫੋਟੋ (4), ਚਰਿੱਤਰ ਪ੍ਰਮਾਣ ਪੱਤਰ, ਸਥਾਨਾਂਤਰਣ ਪ੍ਰਮਾਣ ਪੱਤਰ, ਜਾਤੀ ਪ੍ਰਮਾਣ ਪੱਤਰ (ਜੇ ਲਾਗੂ), ਮੈਡੀਕਲ ਪ੍ਰਮਾਣ ਪੱਤਰ।"
+  }}
+];
+
+function detectLanguage(text){
+  const lower = text.toLowerCase();
+  const mrwTokens = ['mharo','mhari','khamma','ghani','padharo','thaari','kade','koni','hove','milsi'];
+  for (let t of mrwTokens){ if(lower.includes(t)) return 'mrw'; }
+  const hiTokens = ['hai','kya','kab','pariksha','shulk','college','kaise'];
+  for (let t of hiTokens){ if(lower.includes(t)) return 'hi'; }
+  return 'en';
+}
+
+function matchIntent(text){
+  const lower = text.toLowerCase();
+  for(const item of userFAQ){
+    for(const k of item.keys){
+      if(lower.includes(k)) return item;
+    }
+  }
+  return null;
+}
+
+function appendMessage(text, who = 'bot', meta = {}) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${who}`;
+  
+  const avatar = document.createElement('div');
+  avatar.className = 'message-avatar';
+  avatar.innerHTML = who === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+  
+  const content = document.createElement('div');
+  content.className = 'message-content';
+  content.textContent = text;
+  
+  const time = document.createElement('div');
+  time.className = 'message-time';
+  time.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+  if (who === 'bot') {
+    const speakBtn = document.createElement('button');
+    speakBtn.className = 'speak-button';
+    speakBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+    speakBtn.title = 'Speak this message';
+    speakBtn.onclick = () => speakText(text);
+    content.appendChild(speakBtn);
+  }
+  
+  content.appendChild(time);
+  messageDiv.appendChild(avatar);
+  messageDiv.appendChild(content);
+  chatMessages.appendChild(messageDiv);
+  
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  
+  logs.push(`${who.toUpperCase()}: ${text}`);
+}
+
+function showTypingIndicator() {
+  if (isTyping) return;
+  
+  isTyping = true;
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'message bot typing-indicator';
+  typingDiv.id = 'typing-indicator';
+  
+  const avatar = document.createElement('div');
+  avatar.className = 'message-avatar';
+  avatar.innerHTML = '<i class="fas fa-robot"></i>';
+  
+  const content = document.createElement('div');
+  content.className = 'message-content';
+  content.innerHTML = `
+    <span>Bot is typing</span>
+    <div class="typing-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  `;
+  
+  typingDiv.appendChild(avatar);
+  typingDiv.appendChild(content);
+  chatMessages.appendChild(typingDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function hideTypingIndicator() {
+  const typingIndicator = document.getElementById('typing-indicator');
+  if (typingIndicator) {
+    typingIndicator.remove();
+  }
+  isTyping = false;
+}
+
+function handleUser(text) {
+  if (!text || !text.trim()) return;
+  
+  appendMessage(text, 'user');
+  input.value = '';
+  sendBtn.disabled = true;
+  
+  showTypingIndicator();
+  
+  if (text.trim().toLowerCase() === 'hello') {
+    setTimeout(() => {
+      hideTypingIndicator();
+      appendMessage('Hello! I am your College Assistant.', 'bot');
+      setTimeout(() => {
+        appendMessage('How may I help you today?', 'bot');
+        sendBtn.disabled = false;
+      }, 800);
+    }, 1000);
+    return;
+  }
+  
+  const langDetected = (preferred === 'auto') ? detectLanguage(text) : preferred;
+  const matched = matchIntent(text);
+  
+  setTimeout(() => {
+    hideTypingIndicator();
+    
+    if (matched) {
+      let ans = matched.answers[langDetected] || matched.answers['en'];
+      appendMessage(ans, 'bot', { lang: langDetected });
+    } else {
+      appendMessage("I'm not sure about that. Please check the college website or contact helpdesk.", 'bot');
+    }
+    
+    sendBtn.disabled = false;
+  }, 1500);
+}
+sendBtn.addEventListener('click', () => {
+  if (input.value.trim()) {
+    handleUser(input.value);
+  }
+});
+
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    if (input.value.trim()) {
+      handleUser(input.value);
+    }
+  }
+
+  if ((e.ctrlKey || e.metaKey) && e.key === 'v' && !e.shiftKey) {
+    e.preventDefault();
+    startVoiceInput();
+  }
+});
+
+voiceBtn.addEventListener('click', startVoiceInput);
+
+langButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    langButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    preferred = btn.dataset.lang;
+    
+    if (recognition) {
+      const langMap = {
+        'en': 'en-IN',
+        'hi': 'hi-IN',
+        'mrw': 'hi-IN',
+        'auto': 'en-IN'
+      };
+      recognition.lang = langMap[preferred] || 'en-IN';
+    }
+  });
+});
+
+quickActions.forEach(action => {
+  action.addEventListener('click', () => {
+    const question = action.dataset.question;
+    if (question) {
+      handleUser(question);
+    }
+  });
+});
+
+clearBtn.addEventListener('click', () => {
+  chatMessages.innerHTML = '';
+  logs = [];
+  appendMessage("Chat cleared. How can I help you?", 'bot');
+});
+
+function downloadLogs() {
+  if (logs.length === 0) {
+    alert('No logs to download.');
+    return;
+  }
+  const blob = new Blob([logs.join('\n')], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `chat_logs_${new Date().toISOString().split('T')[0]}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+downloadBtn.addEventListener('click', downloadLogs);
+
+setTimeout(() => {
+  appendMessage("Namaste! I'm your College Assistant. I can help you with information about exams, admissions, fees, and more. Ask me anything in Hindi, English, or Marwari!", 'bot');
+}, 500);
+</script>
+</body>
+</html>
